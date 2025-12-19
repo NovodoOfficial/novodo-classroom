@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MHTML Viewer</title>
+</head>
+<body>
+  <div id="content">Loading...</div>
+
+  <script>
+    async function loadMHTML() {
+      // URL to your MHTML file in the repo
+      const url = 'math.mhtml';
+      
+      const response = await fetch(url);
+      const mhtmlText = await response.text();
+
+      // Simple extraction: split headers from body
+      const parts = mhtmlText.split('\r\n\r\n'); // crude split
+      let html = '';
+
+      for (const part of parts) {
+        if (part.includes('<html') || part.includes('<!DOCTYPE')) {
+          html = part; 
+          break;
+        }
+      }
+
+      // Inject HTML into page
+      document.getElementById('content').innerHTML = html;
+    }
+
+    loadMHTML();
+  </script>
+</body>
+</html>
