@@ -48,12 +48,18 @@
           justify-content: center;
       }
 
+      .notice {
+          font-size: 24px;
+          color: #aaaaaa;
+          font-family: "Mojangles", monospace;
+      }
+
       .play-button {
           width: 200px;
           height: 100px;
           background-color: #3cbf3c;
           border: 2px solid #2e8f2e;
-          border-radius: 10px;
+          /* border-radius: 10px; */
           font-size: 48px;
           color: #ffffff;
           cursor: pointer;
@@ -76,6 +82,7 @@
 
     <div class="center">
       <button id="play" class="play-button">Play</button>
+      <p class="notice">Please press "Yes" when asked to automagically install the resource pack.</p>
     </div>
 
     <script>
