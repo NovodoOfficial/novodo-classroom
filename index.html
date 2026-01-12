@@ -22,38 +22,11 @@
         background-color: #f0f0f0;
       }
 
-      h1 {
-        margin-bottom: 20px;
-        color: #333;
-      }
-
       iframe {
-        width: 800px;
-        height: 600px;
-        border: 2px solid #ccc;
-        border-radius: 8px;
-      }
-
-      button {
-        margin-top: 15px;
-        padding: 10px 20px;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-      }
-
-      button:hover {
-        background-color: #0056b3;
-      }
-
-      @media (max-width: 850px) {
-        iframe {
-          width: 90%;
-          height: 60vh;
-        }
+        width: calc(100dvw-20px);
+        height: calc(100dvh-20px);
+        outline: 2px solid #ccc;
+        border-radius: 10px;
       }
     </style>
   </head>
@@ -64,21 +37,5 @@
       src="https://classroom.novodo.co.uk/game"
       allowfullscreen
     ></iframe>
-    <button onclick="goFullscreen()">Fullscreen</button>
-
-    <script>
-      function goFullscreen() {
-        const iframe = document.getElementById("gameIframe");
-        if (iframe.requestFullscreen) {
-          iframe.requestFullscreen();
-        } else if (iframe.webkitRequestFullscreen) {
-          /* Safari */
-          iframe.webkitRequestFullscreen();
-        } else if (iframe.msRequestFullscreen) {
-          /* IE11 */
-          iframe.msRequestFullscreen();
-        }
-      }
-    </script>
   </body>
 </html>
