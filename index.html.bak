@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NOVODO SMP</title>
+
+    <style>
+      @font-face {
+          font-family: "Mojangles";
+          src: url("mojangles.otf") format("opentype");
+      }
+
+      * {
+          box-sizing: border-box;
+      }
+
+      body {
+          margin: 0;
+          height: 100vh;
+          background: #121212;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-family: "Mojangles", monospace;
+          color: white;
+
+          -webkit-font-smoothing: none;
+          -moz-osx-font-smoothing: grayscale;
+          font-smooth: never;
+      
+          text-rendering: optimizeSpeed;
+      }
+
+      .logo {
+          margin-top: 40px;
+          margin-bottom: 60px;
+          display: flex;
+          justify-content: center;
+      }
+
+      .logo img {
+        width: 1000px;
+      }
+
+      .center {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .notice {
+          font-size: 20px;
+          color: #aaaaaa;
+          font-family: "Mojangles", monospace;
+          text-align: center;
+          transform: translateZ(0);
+      }
+
+      .play-button {
+          width: 200px;
+          height: 100px;
+          background-color: #3cbf3c;
+          border: 4px solid #2e8f2e;
+          /* border-radius: 10px; */
+          font-size: 48px;
+          color: #ffffff;
+          cursor: pointer;
+          font-family: "Mojangles", monospace;
+          transform: translateZ(0);
+      }
+
+      .play-button:hover {
+          background-color: #46d146;
+      }
+
+      .play-button:active {
+          background-color: #2fa02f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo">
+      <img src="WMG_SMP.png" alt="WMG SMP Logo" />
+    </div>
+
+    <div class="center">
+      <button id="play" class="play-button">Play</button>
+      <p class="notice">Notice:<br>When joining, you will see a mesage saying:<br>This server recommends the use of a custom resource pack.<br><br>Press Yes or certain blocks in the hub<br>may look wrong or incorrect.</p>
+    </div>
+
+    <script>
+      document.getElementById("play").addEventListener("click", () => {
+        window.location.href = "/game";
+      });
+    </script>
+  </body>
+</html>
