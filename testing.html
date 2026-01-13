@@ -6,21 +6,57 @@
 <link id="favicon" rel="icon" type="image/png">
 
 <style>
-  body { margin: 0; font-family: system-ui, sans-serif; padding: 12px; }
+  body { margin: 0; font-family: system-ui, sans-serif; padding: 12px; background: #111; }
   .layout { display: flex; gap: 12px; align-items: flex-start; }
   .col { display: flex; flex-direction: column; gap: 8px; }
-  iframe { border: 1px solid #444; }
-  canvas { image-rendering: pixelated; border: 1px solid #444; background: #111; }
+
+  iframe {
+    border: 1px solid #444;
+    width: 640px;
+    height: 640px;
+    transition: opacity 0.2s;
+  }
+
+  canvas {
+    image-rendering: pixelated;
+    border: 1px solid #444;
+    background: #111;
+    width: 32px;
+    height: 32px;
+    transition: opacity 0.2s;
+  }
+
   label { font-size: 12px; opacity: 0.8; }
+
+  /* Console */
   #page-console {
-    width: 360px; height: 640px; background: #0f0f0f; color: #e5e5e5;
-    font-family: monospace; font-size: 12px; overflow-y: auto;
-    border: 1px solid #333; padding: 6px; box-sizing: border-box;
+    width: 360px;
+    height: 640px;
+    background: #0f0f0f;
+    color: #e5e5e5;
+    font-family: monospace;
+    font-size: 12px;
+    overflow-y: auto;
+    border: 1px solid #333;
+    padding: 6px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1000;
+    display: none; /* hidden by default */
   }
+
   #console-header {
-    position: sticky; top: 0; background: #111; padding: 4px 6px;
-    font-weight: bold; border-bottom: 1px solid #333; margin: -6px -6px 6px -6px;
+    position: sticky;
+    top: 0;
+    background: #111;
+    padding: 4px 6px;
+    font-weight: bold;
+    border-bottom: 1px solid #333;
+    margin: -6px -6px 6px -6px;
   }
+
   .entry { white-space: pre-wrap; margin-bottom: 4px; }
   .log { color: #e5e5e5; }
   .warn { color: #facc15; }
@@ -34,24 +70,18 @@
 
 <div class="layout">
   <!-- Game -->
-  <div class="col">
+  <div class="col" id="game-column">
     <label>Iframe (640×640)</label>
-    <iframe id="game-frame" src="/game" width="640" height="640"></iframe>
-  </div>
-
-  <!-- Previews -->
-  <div class="col">
-    <label>Preview 320×320</label>
-    <canvas id="preview320" width="320" height="320"></canvas>
+    <iframe id="game-frame" src="/game"></iframe>
 
     <label>Preview 32×32 (favicon source)</label>
     <canvas id="preview32" width="32" height="32"></canvas>
   </div>
+</div>
 
-  <!-- Console -->
-  <div id="page-console">
-    <div id="console-header">📟 Page Console</div>
-  </div>
+<!-- Console -->
+<div id="page-console">
+  <div id="console-header">📟 Page Console</div>
 </div>
 
 <script>
@@ -80,35 +110,23 @@
     console[type] = (...args) => { add(type, args); orig.apply(console, args); };
   });
 
-  window.addEventListener("error", e => {
-    add("error", [`Uncaught: ${e.message}`, `${e.filename}:${e.lineno}`]);
-  });
-
-  window.addEventListener("unhandledrejection", e => {
-    add("error", ["Unhandled rejection:", e.reason]);
-  });
+  window.addEventListener("error", e => add("error", [`Uncaught: ${e.message}`, `${e.filename}:${e.lineno}`]));
+  window.addEventListener("unhandledrejection", e => add("error", ["Unhandled rejection:", e.reason]));
 })();
 </script>
 
 <script>
 /* ---------- CAPTURE LOGIC WITH CANVAS POLLING ---------- */
 const iframe = document.getElementById("game-frame");
-
-const c320 = document.getElementById("preview320");
-const c32  = document.getElementById("preview32");
-
-const ctx320 = c320.getContext("2d");
-const ctx32  = c32.getContext("2d");
-
+const c32 = document.getElementById("preview32");
+const ctx32 = c32.getContext("2d");
 const favicon = document.getElementById("favicon");
 
 iframe.onload = () => {
   const doc = iframe.contentDocument;
-
   let gameCanvas = null;
 
   function findCanvas() {
-    // Try to find any canvas inside the iframe
     const currentCanvas = doc.querySelector("canvas");
     if (currentCanvas) {
       if (gameCanvas !== currentCanvas) {
@@ -118,8 +136,6 @@ iframe.onload = () => {
       startCapture();
       return;
     }
-
-    // Retry until a canvas is found
     requestAnimationFrame(findCanvas);
   }
 
@@ -131,21 +147,14 @@ iframe.onload = () => {
     function captureLoop() {
       if (!gameCanvas) {
         captureStarted = false;
-        findCanvas(); // Re-start if canvas disappears
+        findCanvas();
         return;
       }
 
-      // Draw previews
-      ctx320.clearRect(0, 0, 320, 320);
-      ctx320.drawImage(gameCanvas, 0, 0, 320, 320);
-
       ctx32.clearRect(0, 0, 32, 32);
       ctx32.drawImage(gameCanvas, 0, 0, 32, 32);
-
-      // Update favicon
       favicon.href = c32.toDataURL("image/png") + "#" + Date.now();
 
-      // Check if the game replaced the canvas
       const currentCanvas = doc.querySelector("canvas");
       if (currentCanvas !== gameCanvas) {
         console.log("Canvas replaced, updating reference");
@@ -160,6 +169,25 @@ iframe.onload = () => {
 
   findCanvas();
 };
+
+/* ---------- TOGGLE SHORTCUTS ---------- */
+const consoleDiv = document.getElementById("page-console");
+const gameColumn = document.getElementById("game-column");
+
+document.addEventListener("keydown", e => {
+  if (e.code === "F8") {
+    // Toggle console visibility
+    consoleDiv.style.display = consoleDiv.style.display === "none" ? "block" : "none";
+    e.preventDefault();
+  }
+
+  if (e.code === "F7") {
+    // Toggle game iframe + 32x32 preview visibility but keep input active
+    const isHidden = gameColumn.style.opacity === "0.01";
+    gameColumn.style.opacity = isHidden ? "1" : "0.01";
+    e.preventDefault();
+  }
+});
 </script>
 
 </body>
