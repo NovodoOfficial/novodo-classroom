@@ -6,63 +6,21 @@
 <link id="favicon" rel="icon" type="image/png">
 
 <style>
-  body {
-    margin: 0;
-    font-family: system-ui, sans-serif;
-    padding: 12px;
-  }
-
-  .layout {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .col {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  iframe {
-    border: 1px solid #444;
-  }
-
-  canvas {
-    image-rendering: pixelated;
-    border: 1px solid #444;
-    background: #111;
-  }
-
-  label {
-    font-size: 12px;
-    opacity: 0.8;
-  }
-
-  /* Console */
+  body { margin: 0; font-family: system-ui, sans-serif; padding: 12px; }
+  .layout { display: flex; gap: 12px; align-items: flex-start; }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+  iframe { border: 1px solid #444; }
+  canvas { image-rendering: pixelated; border: 1px solid #444; background: #111; }
+  label { font-size: 12px; opacity: 0.8; }
   #page-console {
-    width: 360px;
-    height: 640px;
-    background: #0f0f0f;
-    color: #e5e5e5;
-    font-family: monospace;
-    font-size: 12px;
-    overflow-y: auto;
-    border: 1px solid #333;
-    padding: 6px;
-    box-sizing: border-box;
+    width: 360px; height: 640px; background: #0f0f0f; color: #e5e5e5;
+    font-family: monospace; font-size: 12px; overflow-y: auto;
+    border: 1px solid #333; padding: 6px; box-sizing: border-box;
   }
-
   #console-header {
-    position: sticky;
-    top: 0;
-    background: #111;
-    padding: 4px 6px;
-    font-weight: bold;
-    border-bottom: 1px solid #333;
-    margin: -6px -6px 6px -6px;
+    position: sticky; top: 0; background: #111; padding: 4px 6px;
+    font-weight: bold; border-bottom: 1px solid #333; margin: -6px -6px 6px -6px;
   }
-
   .entry { white-space: pre-wrap; margin-bottom: 4px; }
   .log { color: #e5e5e5; }
   .warn { color: #facc15; }
@@ -78,12 +36,7 @@
   <!-- Game -->
   <div class="col">
     <label>Iframe (640×640)</label>
-    <iframe
-      id="game-frame"
-      src="/game"
-      width="640"
-      height="640"
-    ></iframe>
+    <iframe id="game-frame" src="/game" width="640" height="640"></iframe>
   </div>
 
   <!-- Previews -->
@@ -109,8 +62,7 @@
   function format(v) {
     if (v instanceof Error) return v.stack || v.message;
     if (typeof v === "object") {
-      try { return JSON.stringify(v, null, 2); }
-      catch { return String(v); }
+      try { return JSON.stringify(v, null, 2); } catch { return String(v); }
     }
     return String(v);
   }
@@ -125,10 +77,7 @@
 
   ["log","warn","error","info"].forEach(type => {
     const orig = console[type];
-    console[type] = (...args) => {
-      add(type, args);
-      orig.apply(console, args);
-    };
+    console[type] = (...args) => { add(type, args); orig.apply(console, args); };
   });
 
   window.addEventListener("error", e => {
@@ -142,7 +91,7 @@
 </script>
 
 <script>
-/* ---------- CAPTURE LOGIC ---------- */
+/* ---------- CAPTURE LOGIC WITH CANVAS POLLING ---------- */
 const iframe = document.getElementById("game-frame");
 
 const c320 = document.getElementById("preview320");
@@ -155,25 +104,61 @@ const favicon = document.getElementById("favicon");
 
 iframe.onload = () => {
   const doc = iframe.contentDocument;
-  const gameCanvas = doc.querySelector("canvas");
 
-  if (!gameCanvas) {
-    console.error("No canvas found inside iframe");
-    return;
+  let gameCanvas = null;
+
+  function findCanvas() {
+    // Try to find any canvas inside the iframe
+    const currentCanvas = doc.querySelector("canvas");
+    if (currentCanvas) {
+      if (gameCanvas !== currentCanvas) {
+        gameCanvas = currentCanvas;
+        console.log("Game canvas found or replaced:", gameCanvas);
+      }
+      startCapture();
+      return;
+    }
+
+    // Retry until a canvas is found
+    requestAnimationFrame(findCanvas);
   }
 
-  console.log("Game canvas found", gameCanvas);
+  let captureStarted = false;
+  function startCapture() {
+    if (captureStarted) return;
+    captureStarted = true;
 
-  setInterval(() => {
-    ctx320.clearRect(0, 0, 320, 320);
-    ctx320.drawImage(gameCanvas, 0, 0, 320, 320);
+    function captureLoop() {
+      if (!gameCanvas) {
+        captureStarted = false;
+        findCanvas(); // Re-start if canvas disappears
+        return;
+      }
 
-    ctx32.clearRect(0, 0, 32, 32);
-    ctx32.drawImage(gameCanvas, 0, 0, 32, 32);
+      // Draw previews
+      ctx320.clearRect(0, 0, 320, 320);
+      ctx320.drawImage(gameCanvas, 0, 0, 320, 320);
 
-    // Cache-busting helps some browsers
-    favicon.href = c32.toDataURL("image/png") + "#" + Date.now();
-  }, 1000 / 30);
+      ctx32.clearRect(0, 0, 32, 32);
+      ctx32.drawImage(gameCanvas, 0, 0, 32, 32);
+
+      // Update favicon
+      favicon.href = c32.toDataURL("image/png") + "#" + Date.now();
+
+      // Check if the game replaced the canvas
+      const currentCanvas = doc.querySelector("canvas");
+      if (currentCanvas !== gameCanvas) {
+        console.log("Canvas replaced, updating reference");
+        gameCanvas = currentCanvas;
+      }
+
+      requestAnimationFrame(captureLoop);
+    }
+
+    requestAnimationFrame(captureLoop);
+  }
+
+  findCanvas();
 };
 </script>
 
