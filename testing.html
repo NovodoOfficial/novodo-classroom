@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link id="favicon" rel="icon">
+</head>
+<body>
+
+<iframe id="game-frame" src="/game" width="640" height="640"></iframe>
+
+<script>
+const iframe = document.getElementById("game-frame");
+const favicon = document.getElementById("favicon");
+
+const out = document.createElement("canvas");
+out.width = 32;
+out.height = 32;
+const ctx = out.getContext("2d");
+
+iframe.onload = () => {
+  const doc = iframe.contentDocument;
+  const gameCanvas = doc.querySelector("canvas");
+
+  setInterval(() => {
+    if (!gameCanvas) return;
+    ctx.drawImage(gameCanvas, 0, 0, 32, 32);
+    favicon.href = out.toDataURL("image/png");
+  }, 1000 / 30);
+};
+</script>
+
+</body>
+</html>
