@@ -29,20 +29,6 @@
         border: none;
       }
     </style>
-    <script>
-      // Forward key presses to the parent window
-      window.addEventListener("keydown", function (e) {
-        if (e.ctrlKey && e.key.toLowerCase() === "q") {
-          e.preventDefault();
-    
-          // Tell the parent page to redirect
-          window.parent.postMessage(
-            { type: "PANIC_REDIRECT" },
-            "*"
-          );
-        }
-      }, true);
-    </script>
   </head>
   <body>
     <iframe
