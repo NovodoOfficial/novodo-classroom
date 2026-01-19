@@ -1,40 +1,116 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home - Classroom</title>
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="https://upload.wikimedia.org/wikipedia/commons/1/19/Google_Classroom_Logo.svg"
-    />
+
     <style>
       body {
         margin: 0;
-        padding: 10px;
         font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: calc(100vh - 20px);
+        height: 100vh;
         background-color: black;
+        overflow: hidden;
+      }
+
+      .top-bar {
+        display: flex;
+        height: 40px;
+        background: #111;
+        font-size: 16px;
+        z-index: 10;
+      }
+
+      .top-bar a,
+      .top-bar button {
+        flex: 1;
+        line-height: 40px;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .top-bar a:hover,
+      .top-bar button:hover {
+        background: #222;
       }
 
       iframe {
-        width: calc(100% - 20px);
-        height: calc(100% - 20px);
-        outline: 2px solid #555;
-        border-radius: 10px;
+        position: absolute;
+        top: 40px;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 40px);
         border: none;
+        border-top: 2px solid #555;
+      }
+
+      /* FULLSCREEN MODE */
+      body.fullscreen .top-bar {
+        display: none;
+      }
+
+      body.fullscreen iframe {
+        top: 0;
+        height: 100vh;
+        border-top: none;
+      }
+
+      .fs-overlay {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        z-index: 9999;
+        display: none;
+      }
+
+      body.fullscreen .fs-overlay {
+        display: block;
+      }
+
+      .fs-overlay button {
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: 1px solid #555;
+        padding: 10px 14px;
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 6px;
+      }
+
+      .fs-overlay button:hover {
+        background: rgba(0, 0, 0, 0.7);
       }
     </style>
   </head>
+
   <body>
+    <div class="top-bar">
+      <a href="https://classroom.novodo.co.uk">classroom.novodo.co.uk</a>
+      <a href="https://classroom.novodo.co.uk/kartbros">Kartbros</a>
+      <a href="https://classroom.novodo.co.uk/custom">Other Site</a>
+      <button onclick="toggleFullscreen()">Fullscreen</button>
+    </div>
+
     <iframe
       id="gameIframe"
       src="https://kartbros.io/"
-      allowfullscreen
+      sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms"
     ></iframe>
+
+    <div class="fs-overlay">
+      <button onclick="toggleFullscreen()">Exit Fullscreen</button>
+    </div>
+
+    <script>
+      function toggleFullscreen() {
+        document.body.classList.toggle("fullscreen");
+      }
+    </script>
   </body>
 </html>
