@@ -9,6 +9,7 @@
       type="image/svg+xml"
       href="https://upload.wikimedia.org/wikipedia/commons/1/19/Google_Classroom_Logo.svg"
     />
+
     <style>
       body {
         margin: 0;
@@ -18,48 +19,31 @@
         overflow: hidden;
       }
 
-      .top-bar {
-        display: flex;
+      iframe {
+        border: none;
+      }
+
+      #navbar {
         height: 40px;
-        background: #111;
-        font-size: 16px;
+        width: 100%;
         z-index: 10;
       }
 
-      .top-bar a,
-      .top-bar button {
-        flex: 1;
-        line-height: 40px;
-        text-align: center;
-        color: white;
-        text-decoration: none;
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-      }
-
-      .top-bar a:hover,
-      .top-bar button:hover {
-        background: #222;
-      }
-
-      iframe {
+      #gameIframe {
         position: absolute;
         top: 40px;
         left: 0;
         width: 100%;
         height: calc(100vh - 40px);
-        border: none;
         border-top: 2px solid #555;
       }
 
       /* FULLSCREEN MODE */
-      body.fullscreen .top-bar {
+      body.fullscreen #navbar {
         display: none;
       }
 
-      body.fullscreen iframe {
+      body.fullscreen #gameIframe {
         top: 0;
         height: 100vh;
         border-top: none;
@@ -94,20 +78,17 @@
   </head>
 
   <body>
-    <div class="top-bar">
-      <a href="#">IP: wss://server.novodo.co.uk/</a>
-      <a href="https://classroom.novodo.co.uk">classroom.novodo.co.uk</a>
-      <a href="https://classroom.novodo.co.uk/kartbros">Kartbros</a>
-      <a href="https://classroom.novodo.co.uk/custom">Other Site</a>
-      <button onclick="toggleFullscreen()">Fullscreen</button>
-    </div>
+    <!-- NAVBAR IFRAME -->
+    <iframe id="navbar" src="/navbar.html"></iframe>
 
+    <!-- GAME IFRAME -->
     <iframe
       id="gameIframe"
       src="https://classroom.novodo.co.uk/game"
       sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms"
     ></iframe>
 
+    <!-- FULLSCREEN EXIT BUTTON -->
     <div class="fs-overlay">
       <button onclick="toggleFullscreen()">Exit Fullscreen</button>
     </div>
