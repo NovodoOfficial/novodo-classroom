@@ -40,9 +40,35 @@
         background: #222;
       }
 
-      select {
+      .tab-selector {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        height: 40px;
+        color: white;
+        cursor: pointer;
+      }
+      
+      .tab-label {
+        font-size: 13px;
+        color: #bbb;
+        user-select: none;
+      }
+      
+      .tab-selector select {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
         appearance: none;
-        background-color: #111;
+        padding-right: 12px;
+      }
+      
+      .tab-selector select:focus {
+        outline: none;
       }
     </style>
   </head>
@@ -53,12 +79,16 @@
       <a href="https://classroom.novodo.co.uk" target="_top">classroom.novodo.co.uk</a>
       <a href="https://classroom.novodo.co.uk/kartbros" target="_top">Kartbros</a>
 
-      <!-- FAVICON / TITLE SELECTOR -->
-      <select onchange="setBrand(this.value)">
-        <option value="classroom" selected>Google Classroom</option>
-        <option value="sparxmaths">Sparx Maths</option>
-        <!-- add more here -->
-      </select>
+      <div class="tab-selector">
+        <span class="tab-label">Tab Name</span>
+        <select onchange="setBrand(this.value)">
+          <option value="classroom" selected>Google Classroom</option>
+          <option value="sparxmaths">Sparx Maths</option>
+          <option value="sparxreader">Sparx Reader</option>
+          <option value="sparxscience">Sparx Science</option>
+        </select>
+      </div>
+
 
       <button onclick="parent.toggleFullscreen()">Fullscreen</button>
     </div>
@@ -74,7 +104,14 @@
           title: "Sparx Maths",
           favicon: "/favicons/sparx-maths.png",
         },
-        // add more entries here
+        sparxreader: {
+          title: "Sparx Reader",
+          favicon: "/favicons/sparx-reader.png",
+        },
+        sparxscience: {
+          title: "Sparx Science",
+          favicon: "/favicons/sparx-science.png",
+        },
       };
 
       function setBrand(key) {
