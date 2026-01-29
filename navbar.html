@@ -13,25 +13,36 @@
       .top-bar {
         display: flex;
         height: 40px;
-        font-size: 16px;
+        font-size: 14px;
       }
 
       .top-bar a,
-      .top-bar button {
+      .top-bar button,
+      .top-bar select {
         flex: 1;
         line-height: 40px;
+        height: 40px;
         text-align: center;
         color: white;
-        text-decoration: none;
         background: none;
         border: none;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 14px;
+      }
+
+      .top-bar a {
+        text-decoration: none;
       }
 
       .top-bar a:hover,
-      .top-bar button:hover {
+      .top-bar button:hover,
+      .top-bar select:hover {
         background: #222;
+      }
+
+      select {
+        appearance: none;
+        background-color: #111;
       }
     </style>
   </head>
@@ -41,8 +52,49 @@
       <a href="#">IP: wss://server.novodo.co.uk/</a>
       <a href="https://classroom.novodo.co.uk" target="_top">classroom.novodo.co.uk</a>
       <a href="https://classroom.novodo.co.uk/kartbros" target="_top">Kartbros</a>
-      <a href="https://classroom.novodo.co.uk/custom" target="_top">Other Site</a>
+
+      <!-- FAVICON / TITLE SELECTOR -->
+      <select onchange="setBrand(this.value)">
+        <option value="classroom" selected>Google Classroom</option>
+        <option value="sparx">Sparx Maths</option>
+        <!-- add more here -->
+      </select>
+
       <button onclick="parent.toggleFullscreen()">Fullscreen</button>
     </div>
+
+    <script>
+      const brands = {
+        classroom: {
+          title: "Home - Classroom",
+          favicon:
+            "https://upload.wikimedia.org/wikipedia/commons/1/19/Google_Classroom_Logo.svg",
+        },
+        sparx: {
+          title: "Sparx Maths",
+          favicon: "/favicons/sparx.png",
+        },
+        // add more entries here
+      };
+
+      function setBrand(key) {
+        const brand = brands[key];
+        if (!brand) return;
+
+        const doc = parent.document;
+
+        // Set title
+        doc.title = brand.title;
+
+        // Set favicon
+        let link = doc.querySelector("link[rel='icon']");
+        if (!link) {
+          link = doc.createElement("link");
+          link.rel = "icon";
+          doc.head.appendChild(link);
+        }
+        link.href = brand.favicon;
+      }
+    </script>
   </body>
 </html>
