@@ -39,55 +39,50 @@
     }
   </style>
 </head>
-<body onclick="handleClick()">
+<body onclick="openSitePopup()">
 
   <div id="centerText">Click to open game</div>
 
   <script>
     let opened = false;
 
-    function handleClick() {
-      if (!opened) {
-        opened = true;
+    function openSitePopup() {
+      if (opened) return;
+      opened = true;
 
-        const text = document.getElementById("centerText");
-        text.classList.add("hidden");
+      const text = document.getElementById("centerText");
+      text.classList.add("hidden");
 
-        const width = 1200;
-        const height = 800;
+      const width = 1200;
+      const height = 800;
 
-        const left = (screen.availWidth - width) / 2;
-        const top = (screen.availHeight - height) / 2;
+      const left = (screen.availWidth - width) / 2;
+      const top = (screen.availHeight - height) / 2;
 
-        const popup = window.open(
-          '/site',
-          'gamePopup',
-          `width=${width},height=${height},left=${left},top=${top},resizable=yes`
-        );
+      const popup = window.open(
+        '/site',
+        'gamePopup',
+        `width=${width},height=${height},left=${left},top=${top},resizable=yes`
+      );
 
-        if (!popup) {
-          alert('Popup blocked! Please allow popups.');
-          text.classList.remove("hidden");
-          opened = false;
-          return;
-        }
-
-        popup.onload = function () {
-          const script = popup.document.createElement('script');
-          script.textContent = `
-            document.addEventListener('visibilitychange', function () {
-              if (document.hidden) {
-                window.close();
-              }
-            });
-          `;
-          popup.document.head.appendChild(script);
-        };
-
-      } else {
-        // Second click → redirect to Google Classroom
-        window.location.href = "https://classroom.google.com/?pli=1";
+      if (!popup) {
+        alert('Popup blocked! Please allow popups.');
+        text.classList.remove("hidden");
+        opened = false;
+        return;
       }
+
+      popup.onload = function () {
+        const script = popup.document.createElement('script');
+        script.textContent = `
+          document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+              window.close();
+            }
+          });
+        `;
+        popup.document.head.appendChild(script);
+      };
     }
   </script>
 
