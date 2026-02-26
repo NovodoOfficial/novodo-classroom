@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Close Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      background-color: #222;
+      color: #fff;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>Focus Close Demo</h1>
+  <p>Click the button below to open the Classroom site in a new tab. It will close itself when you switch tabs.</p>
+  <button onclick="openSiteTab()">Open /site</button>
+
+  <script>
+    function openSiteTab() {
+      const demoTab = window.open('/site', '_blank', 'width=1200,height=800');
+      if (!demoTab) {
+        alert('Popup blocked! Please allow popups.');
+        return;
+      }
+
+      // Wait for the page to load, then inject the close-on-blur script
+      demoTab.onload = function () {
+        const script = demoTab.document.createElement('script');
+        script.textContent = `
+          document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+              console.log('Tab lost focus. Closing...');
+              window.close();
+            }
+          });
+        `;
+        demoTab.document.head.appendChild(script);
+      };
+    }
+  </script>
+</body>
+</html>
