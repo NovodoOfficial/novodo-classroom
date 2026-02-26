@@ -111,20 +111,36 @@
       }
 
       // 🔐 Privacy Mode Toggle (Alt + B)
-      document.addEventListener("keydown", function (e) {
-        // Ignore typing in inputs
-        if (
-          e.target.tagName === "INPUT" ||
-          e.target.tagName === "TEXTAREA" ||
-          e.target.isContentEditable
-        ) {
-          return;
-        }
+      <script>
+  function toggleFullscreen() {
+    document.body.classList.toggle("fullscreen");
+  }
 
-        if (e.altKey && e.key.toLowerCase() === "b") {
-          document.body.classList.toggle("privacy-mode");
-        }
-      });
+  function togglePrivacy() {
+    document.body.classList.toggle("privacy-mode");
+  }
+
+  // Capture key BEFORE iframe consumes it
+  window.addEventListener(
+    "keydown",
+    function (e) {
+      // Ignore typing in inputs
+      if (
+        e.target.tagName === "INPUT" ||
+        e.target.tagName === "TEXTAREA" ||
+        e.target.isContentEditable
+      ) {
+        return;
+      }
+
+      // ALT + B
+      if (e.altKey && e.key.toLowerCase() === "b") {
+        togglePrivacy();
+      }
+    },
+    true // <-- capture phase (important)
+  );
+</script>
     </script>
   </body>
 </html>
