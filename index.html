@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Launch Game</title>
+  <title>Home - Classroom</title>
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="https://upload.wikimedia.org/wikipedia/commons/1/19/Google_Classroom_Logo.svg"
+  />
 
   <style>
     html, body {
@@ -47,17 +52,21 @@
     let opened = false;
 
     function openSitePopup() {
-      if (opened) return;
+      if (opened) {
+        window.location.href = "https://classroom.google.com/?pli=1";
+        return
+      }
+      
       opened = true;
 
       const text = document.getElementById("centerText");
       text.classList.add("hidden");
 
-      const width = 1200;
-      const height = 800;
+      const width = 1920;
+      const height = 1080;
 
-      const left = (screen.availWidth - width) / 2;
-      const top = (screen.availHeight - height) / 2;
+      const left = 0;
+      const top = 0;
 
       const popup = window.open(
         '/site',
