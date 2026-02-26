@@ -14,7 +14,6 @@
       overflow: hidden;
       cursor: pointer;
 
-      /* Fullscreen background image */
       background: url("/background.png") no-repeat center center fixed;
       background-size: cover;
 
@@ -40,31 +39,41 @@
     }
   </style>
 </head>
-<body onclick="openSiteTab()">
+<body onclick="openSitePopup()">
 
   <div id="centerText">Click to open game</div>
 
   <script>
     let opened = false;
 
-    function openSiteTab() {
-      if (opened) return; // prevent double clicks
+    function openSitePopup() {
+      if (opened) return;
       opened = true;
 
       const text = document.getElementById("centerText");
       text.classList.add("hidden");
 
-      const demoTab = window.open('/site', '_blank');
+      const width = 1200;
+      const height = 800;
 
-      if (!demoTab) {
+      const left = (screen.availWidth - width) / 2;
+      const top = (screen.availHeight - height) / 2;
+
+      const popup = window.open(
+        '/site',
+        'gamePopup',
+        `width=${width},height=${height},left=${left},top=${top},resizable=yes`
+      );
+
+      if (!popup) {
         alert('Popup blocked! Please allow popups.');
         text.classList.remove("hidden");
         opened = false;
         return;
       }
 
-      demoTab.onload = function () {
-        const script = demoTab.document.createElement('script');
+      popup.onload = function () {
+        const script = popup.document.createElement('script');
         script.textContent = `
           document.addEventListener('visibilitychange', function () {
             if (document.hidden) {
@@ -72,7 +81,7 @@
             }
           });
         `;
-        demoTab.document.head.appendChild(script);
+        popup.document.head.appendChild(script);
       };
     }
   </script>
