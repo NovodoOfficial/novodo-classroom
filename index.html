@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home - Classroom</title>
+
     <link
       rel="icon"
       type="image/svg+xml"
@@ -15,19 +16,28 @@
         margin: 0;
         font-family: Arial, sans-serif;
         height: 100vh;
-        background-color: black;
         overflow: hidden;
+
+        /* Background image */
+        background: url("/background.png") no-repeat center center fixed;
+        background-size: cover;
+        background-color: black;
       }
 
       iframe {
         border: none;
+
+        /* 50% transparency */
+        opacity: 0.5;
+
+        /* 10% lighter */
+        filter: brightness(1.1);
       }
 
       #navbar {
         height: 40px;
         width: 100%;
         z-index: 10;
-        border: none;
         outline: none;
       }
 
@@ -80,17 +90,14 @@
   </head>
 
   <body>
-    <!-- NAVBAR IFRAME -->
     <iframe id="navbar" src="/navbar.html"></iframe>
 
-    <!-- GAME IFRAME -->
     <iframe
       id="gameIframe"
       src="https://classroom.novodo.co.uk/game"
       sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms"
     ></iframe>
 
-    <!-- FULLSCREEN EXIT BUTTON -->
     <div class="fs-overlay">
       <button onclick="toggleFullscreen()">Exit Fullscreen</button>
     </div>
