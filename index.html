@@ -28,20 +28,22 @@
 </head>
 <body>
   <h1>Focus Close Demo</h1>
-  <p>Click the button below to open the Classroom site in a new tab. It will close itself when you switch tabs.</p>
-  <button onclick="openSiteTab()">Open /site</button>
+  <p>Click the button below to open the Classroom site in a new tab. It will close itself when you switch tabs, and close this tab immediately.</p>
+  <button onclick="openAndClose()">Open /site & Close This Tab</button>
 
   <script>
-    function openSiteTab() {
-      const demoTab = window.open('/site', '_blank', 'width=1200,height=800');
-      if (!demoTab) {
+    function openAndClose() {
+      // Open the new /site tab
+      const siteTab = window.open('/site', '_blank', 'width=1200,height=800');
+
+      if (!siteTab) {
         alert('Popup blocked! Please allow popups.');
         return;
       }
 
-      // Wait for the page to load, then inject the close-on-blur script
-      demoTab.onload = function () {
-        const script = demoTab.document.createElement('script');
+      // Inject the visibility-change close script into the new tab
+      siteTab.onload = function () {
+        const script = siteTab.document.createElement('script');
         script.textContent = `
           document.addEventListener('visibilitychange', function () {
             if (document.hidden) {
@@ -50,8 +52,11 @@
             }
           });
         `;
-        demoTab.document.head.appendChild(script);
+        siteTab.document.head.appendChild(script);
       };
+
+      // Close the original tab immediately (works because we opened a new one via script)
+      window.close();
     }
   </script>
 </body>
