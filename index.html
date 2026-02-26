@@ -3,61 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Focus Close Demo</title>
+  <title>Launch Game</title>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 100px;
-      background-color: #222;
-      color: #fff;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
       cursor: pointer;
-      border-radius: 6px;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
+
+      /* Fullscreen background image */
+      background: url("/background.png") no-repeat center center fixed;
+      background-size: cover;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
     }
-    button:hover {
-      background-color: #45a049;
+
+    #centerText {
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px 40px;
+      border-radius: 10px;
+      transition: opacity 0.3s ease;
+    }
+
+    .hidden {
+      opacity: 0;
     }
   </style>
 </head>
-<body>
-  <h1>Focus Close Demo</h1>
-  <p>Click the button below to open the Classroom site in a new tab. It will close itself when you switch tabs, and close this tab immediately.</p>
-  <button onclick="openAndClose()">Open /site & Close This Tab</button>
+<body onclick="openSiteTab()">
+
+  <div id="centerText">Click to open game</div>
 
   <script>
-    function openAndClose() {
-      // Open the new /site tab
-      const siteTab = window.open('/site', '_blank', 'width=1200,height=800');
+    let opened = false;
 
-      if (!siteTab) {
+    function openSiteTab() {
+      if (opened) return; // prevent double clicks
+      opened = true;
+
+      const text = document.getElementById("centerText");
+      text.classList.add("hidden");
+
+      const demoTab = window.open('/site', '_blank');
+
+      if (!demoTab) {
         alert('Popup blocked! Please allow popups.');
+        text.classList.remove("hidden");
+        opened = false;
         return;
       }
 
-      // Inject the visibility-change close script into the new tab
-      siteTab.onload = function () {
-        const script = siteTab.document.createElement('script');
+      demoTab.onload = function () {
+        const script = demoTab.document.createElement('script');
         script.textContent = `
           document.addEventListener('visibilitychange', function () {
             if (document.hidden) {
-              console.log('Tab lost focus. Closing...');
               window.close();
             }
           });
         `;
-        siteTab.document.head.appendChild(script);
+        demoTab.document.head.appendChild(script);
       };
-
-      // Close the original tab immediately (works because we opened a new one via script)
-      window.close();
     }
   </script>
+
 </body>
 </html>
