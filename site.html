@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home - Classroom</title>
-
     <link
       rel="icon"
       type="image/svg+xml"
@@ -16,31 +15,19 @@
         margin: 0;
         font-family: Arial, sans-serif;
         height: 100vh;
-        overflow: hidden;
-
-        /* Background image */
-        background: url("/background.png") no-repeat center center fixed;
-        background-size: cover;
         background-color: black;
+        overflow: hidden;
       }
 
       iframe {
         border: none;
-
-        /* Smooth transition */
-        transition: opacity 0.3s ease, filter 0.3s ease;
-      }
-
-      /* 🔐 PRIVACY MODE */
-      body.privacy-mode iframe {
-        opacity: 0.25;
-        filter: brightness(1.2);
       }
 
       #navbar {
         height: 40px;
         width: 100%;
         z-index: 10;
+        border: none;
         outline: none;
       }
 
@@ -93,14 +80,17 @@
   </head>
 
   <body>
+    <!-- NAVBAR IFRAME -->
     <iframe id="navbar" src="/navbar.html"></iframe>
 
+    <!-- GAME IFRAME -->
     <iframe
       id="gameIframe"
       src="https://classroom.novodo.co.uk/game"
       sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms"
     ></iframe>
 
+    <!-- FULLSCREEN EXIT BUTTON -->
     <div class="fs-overlay">
       <button onclick="toggleFullscreen()">Exit Fullscreen</button>
     </div>
@@ -109,38 +99,6 @@
       function toggleFullscreen() {
         document.body.classList.toggle("fullscreen");
       }
-
-      // 🔐 Privacy Mode Toggle (Alt + B)
-      <script>
-  function toggleFullscreen() {
-    document.body.classList.toggle("fullscreen");
-  }
-
-  function togglePrivacy() {
-    document.body.classList.toggle("privacy-mode");
-  }
-
-  // Capture key BEFORE iframe consumes it
-  window.addEventListener(
-    "keydown",
-    function (e) {
-      // Ignore typing in inputs
-      if (
-        e.target.tagName === "INPUT" ||
-        e.target.tagName === "TEXTAREA" ||
-        e.target.isContentEditable
-      ) {
-        return;
-      }
-
-      // ALT + B
-      if (e.altKey && e.key.toLowerCase() === "b") {
-        togglePrivacy();
-      }
-    },
-    true // <-- capture phase (important)
-  );
-</script>
     </script>
   </body>
 </html>
