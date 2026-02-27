@@ -96,7 +96,7 @@
     </div>
 
     <script>
-      // Create overlay element once
+      // Create overlay once
       const overlay = document.createElement("div");
       overlay.style.position = "fixed";
       overlay.style.top = "0";
@@ -110,14 +110,26 @@
     
       document.body.appendChild(overlay);
     
-      // Toggle overlay when tab focus changes
-      document.addEventListener("visibilitychange", function () {
+      function showOverlay() {
+        overlay.style.display = "block";
+      }
+    
+      function hideOverlay() {
+        overlay.style.display = "none";
+      }
+    
+      // Fires when switching tabs
+      document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
-          overlay.style.display = "block";
+          showOverlay();
         } else {
-          overlay.style.display = "none";
+          hideOverlay();
         }
       });
+    
+      // Fires when switching apps / alt-tab / clicking other window
+      window.addEventListener("blur", showOverlay);
+      window.addEventListener("focus", hideOverlay);
     </script>
   </body>
 </html>
