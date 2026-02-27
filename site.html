@@ -97,6 +97,7 @@
 
     <script>
   const overlay = document.createElement("div");
+
   overlay.style.position = "fixed";
   overlay.style.top = "0";
   overlay.style.left = "0";
@@ -117,7 +118,7 @@
     overlay.style.display = "none";
   }
 
-  // Tab switch (most reliable)
+  // Tab switching (most reliable signal)
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       showOverlay();
@@ -126,20 +127,19 @@
     }
   });
 
-  // Window blur — but ignore iframe clicks
+  // True window focus detection
   window.addEventListener("blur", () => {
-    // Small delay lets activeElement update
     setTimeout(() => {
-      const active = document.activeElement;
-
-      // If focus moved to an iframe, ignore
-      if (active && active.tagName === "IFRAME") return;
-
-      showOverlay();
-    }, 0);
+      // If the whole document truly lost focus
+      if (!document.hasFocus()) {
+        showOverlay();
+      }
+    }, 50);
   });
 
-  window.addEventListener("focus", hideOverlay);
+  window.addEventListener("focus", () => {
+    hideOverlay();
+  });
 </script>
   </body>
 </html>
