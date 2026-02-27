@@ -106,8 +106,6 @@
   overlay.style.background = "url('/background.png') no-repeat center center";
   overlay.style.backgroundSize = "cover";
   overlay.style.zIndex = "999999";
-
-  // Important changes:
   overlay.style.opacity = "0";
   overlay.style.pointerEvents = "none";
   overlay.style.transition = "opacity 0.1s ease";
@@ -124,17 +122,27 @@
     overlay.style.pointerEvents = "none";
   }
 
-  // True window focus loss (popup makes this reliable)
-  window.addEventListener("blur", showOverlay);
-  window.addEventListener("focus", hideOverlay);
-
-  // Tab switching inside popup
+  // Tab switching
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       showOverlay();
     } else {
       hideOverlay();
     }
+  });
+
+  // Smart blur detection
+  window.addEventListener("blur", () => {
+    setTimeout(() => {
+      // If document still has focus, it was just iframe focus
+      if (!document.hasFocus()) {
+        showOverlay();
+      }
+    }, 50);
+  });
+
+  window.addEventListener("focus", () => {
+    hideOverlay();
   });
 </script>
   </body>
