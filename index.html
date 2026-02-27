@@ -49,28 +49,32 @@
   <div id="centerText">Click to open game</div>
 
    <script>
-    let opened = false;
-  
-    function openSitePopup() {
-      if (opened) {
-        window.location.href = "https://classroom.google.com/?pli=1";
-        return;
-      }
-  
-      opened = true;
-  
-      const text = document.getElementById("centerText");
-      text.classList.add("hidden");
-  
-      const newTab = window.open('/site', '_blank');
-  
-      if (!newTab) {
-        alert('Popup blocked! Please allow popups.');
-        text.classList.remove("hidden");
-        opened = false;
-      }
+  let opened = false;
+
+  function openSitePopup() {
+    if (opened) {
+      window.location.href = "https://classroom.google.com/?pli=1";
+      return;
     }
-  </script>
+
+    opened = true;
+
+    const text = document.getElementById("centerText");
+    text.classList.add("hidden");
+
+    const popup = window.open(
+      '/site',
+      'gamePopup',
+      'width=1920,height=1080,left=0,top=0,resizable=yes'
+    );
+
+    if (!popup) {
+      alert('Popup blocked! Please allow popups.');
+      text.classList.remove("hidden");
+      opened = false;
+    }
+  }
+</script>
 
 </body>
 </html>
