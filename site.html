@@ -106,25 +106,29 @@
   overlay.style.background = "url('/background.png') no-repeat center center";
   overlay.style.backgroundSize = "cover";
   overlay.style.zIndex = "999999";
-  overlay.style.display = "none";
+
+  // Important changes:
+  overlay.style.opacity = "0";
+  overlay.style.pointerEvents = "none";
+  overlay.style.transition = "opacity 0.1s ease";
 
   document.body.appendChild(overlay);
 
   function showOverlay() {
-    overlay.style.display = "block";
+    overlay.style.opacity = "1";
+    overlay.style.pointerEvents = "auto";
   }
 
   function hideOverlay() {
-    overlay.style.display = "none";
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
   }
 
-  // Popup loses focus (alt-tab, click other window, minimize)
+  // True window focus loss (popup makes this reliable)
   window.addEventListener("blur", showOverlay);
-
-  // Popup regains focus
   window.addEventListener("focus", hideOverlay);
 
-  // Also handle tab switching inside popup
+  // Tab switching inside popup
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       showOverlay();
