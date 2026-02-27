@@ -118,27 +118,19 @@
     overlay.style.display = "none";
   }
 
-  // Tab switching (most reliable signal)
+  // Popup loses focus (alt-tab, click other window, minimize)
+  window.addEventListener("blur", showOverlay);
+
+  // Popup regains focus
+  window.addEventListener("focus", hideOverlay);
+
+  // Also handle tab switching inside popup
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       showOverlay();
     } else {
       hideOverlay();
     }
-  });
-
-  // True window focus detection
-  window.addEventListener("blur", () => {
-    setTimeout(() => {
-      // If the whole document truly lost focus
-      if (!document.hasFocus()) {
-        showOverlay();
-      }
-    }, 50);
-  });
-
-  window.addEventListener("focus", () => {
-    hideOverlay();
   });
 </script>
   </body>
