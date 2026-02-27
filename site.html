@@ -96,35 +96,28 @@
     </div>
 
     <script>
-  let disguised = false;
-
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden && !disguised) {
-      disguised = true;
-
-      // Remove everything
-      document.body.innerHTML = "";
-
-      // Create fullscreen background image
-      const img = document.createElement("img");
-      img.src = "/background.png";
-
-      img.style.position = "fixed";
-      img.style.top = "0";
-      img.style.left = "0";
-      img.style.width = "100vw";
-      img.style.height = "100vh";
-      img.style.objectFit = "cover";
-      img.style.zIndex = "999999";
-
-      document.body.appendChild(img);
-    }
-
-    // Optional: restore page when tab becomes visible again
-    if (!document.hidden && disguised) {
-      location.reload();
-    }
-  });
-</script>
+      // Create overlay element once
+      const overlay = document.createElement("div");
+      overlay.style.position = "fixed";
+      overlay.style.top = "0";
+      overlay.style.left = "0";
+      overlay.style.width = "100vw";
+      overlay.style.height = "100vh";
+      overlay.style.background = "url('/background.png') no-repeat center center";
+      overlay.style.backgroundSize = "cover";
+      overlay.style.zIndex = "999999";
+      overlay.style.display = "none";
+    
+      document.body.appendChild(overlay);
+    
+      // Toggle overlay when tab focus changes
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+          overlay.style.display = "block";
+        } else {
+          overlay.style.display = "none";
+        }
+      });
+    </script>
   </body>
 </html>
