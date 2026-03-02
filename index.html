@@ -8,10 +8,12 @@
     />
     <meta name="description" content="Play minecraft 1.12 in your browser" />
     <meta name="keywords" content="eaglercraft, minecraft, 1.12, 1.12.2" />
-    <title>EaglercraftX 1.12 WASM-GC</title>
-    <meta property="og:locale" content="en-US" />
-    <meta property="og:image" content="favicon.png" />
-    <link type="image/png" rel="shortcut icon" href="favicon.png" />
+    <title>Home - Classroom</title>
+    <link
+      rel="shortcut icon"
+      type="image/svg+xml"
+      href="https://upload.wikimedia.org/wikipedia/commons/1/19/Google_Classroom_Logo.svg"
+    />
     <script type="text/javascript" src="bootstrap.js"></script>
     <script type="text/javascript">
       "use strict";
@@ -23,8 +25,6 @@
       function updateImageVisibility() {
         var container = document.getElementById("classImageContainer");
         if (!container) return;
-
-        container.style.display = document.title === "class" ? "block" : "none";
       }
 
       /* ---------- focus state logic ---------- */
@@ -39,12 +39,10 @@
             unfocusedTimer = null;
           }
 
-          document.title = "test";
           updateImageVisibility();
         } else {
           if (unfocusedTimer === null) {
             unfocusedTimer = setTimeout(function () {
-              document.title = "class";
               updateImageVisibility();
               unfocusedTimer = null;
             }, 250);
@@ -61,8 +59,6 @@
           );
           return;
         }
-
-        document.title = "test";
 
         /* ---------- focus listeners ---------- */
 
