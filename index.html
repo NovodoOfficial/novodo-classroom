@@ -25,6 +25,13 @@
       function updateImageVisibility() {
         var container = document.getElementById("classImageContainer");
         if (!container) return;
+
+        var windowFocused = document.hasFocus();
+        var tabFocused = document.visibilityState === "visible";
+
+        // Show image only when NOT fully focused (after delay)
+        container.style.display =
+          windowFocused && tabFocused ? "none" : "block";
       }
 
       /* ---------- focus state logic ---------- */
@@ -39,10 +46,12 @@
             unfocusedTimer = null;
           }
 
+          document.title = "Home - Classroom";
           updateImageVisibility();
         } else {
           if (unfocusedTimer === null) {
             unfocusedTimer = setTimeout(function () {
+              document.title = "Home - Classroom";
               updateImageVisibility();
               unfocusedTimer = null;
             }, 250);
@@ -60,11 +69,23 @@
           return;
         }
 
+        /* Force title + favicon */
+
+        document.title = "Home - Classroom";
+
+        var favicon = document.querySelector("link[rel='shortcut icon']");
+        if (favicon) {
+          favicon.href =
+            "https://upload.wikimedia.org/wikipedia/commons/1/19/Google_Classroom_Logo.svg";
+        }
+
         /* ---------- focus listeners ---------- */
 
         window.addEventListener("focus", checkFocusState);
         window.addEventListener("blur", checkFocusState);
         document.addEventListener("visibilitychange", checkFocusState);
+
+        updateImageVisibility();
 
         /* ---------- launch options ---------- */
 
