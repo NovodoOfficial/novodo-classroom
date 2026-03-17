@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Replay Viewer</title>
+    <style>
+      body {
+        background: #111;
+        color: white;
+        font-family: sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+      }
+
+      canvas {
+        border: 2px solid #333;
+        margin-top: 20px;
+        max-width: 100%;
+      }
+
+      button,
+      input {
+        margin: 10px;
+        padding: 10px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Replay Viewer</h1>
+
+    <input type="file" id="fileInput" accept=".zip" />
+
+    <br />
+
+    <button onclick="play()">Play</button>
+    <button onclick="pause()">Pause</button>
+
+    <br />
+
+    <input
+      type="range"
+      id="scrubber"
+      min="0"
+      max="0"
+      value="0"
+      style="width: 80%"
+    />
+
+    <br />
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+      let frames = [];
+      let currentFrame = 0;
+      let playing = false;
+      let interval;
+
+      const FPS = 2;
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const scrubber = document.getElementById("scrubber");
+
+      /* ---------- load zip ---------- */
+
+      document
+        .getElementById("fileInput")
+        .addEventListener("change", async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          if (!window.JSZip) {
+            await loadScript(
+              "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js",
+            );
+          }
+
+          const zip = await JSZip.loadAsync(file);
+
+          const entries = Object.keys(zip.files)
+            .filter((name) => name.endsWith(".png"))
+            .sort();
+
+          frames = [];
+
+          for (const name of entries) {
+            const blob = await zip.files[name].async("blob");
+            const img = await createImageBitmap(blob);
+            frames.push(img);
+          }
+
+          console.log("Loaded frames:", frames.length);
+
+          if (frames.length > 0) {
+            canvas.width = frames[0].width;
+            canvas.height = frames[0].height;
+            drawFrame(0);
+
+            scrubber.max = frames.length - 1;
+          }
+        });
+
+      /* ---------- playback ---------- */
+
+      function drawFrame(i) {
+        if (!frames[i]) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(frames[i], 0, 0);
+        scrubber.value = i;
+      }
+
+      function play() {
+        if (playing) return;
+        playing = true;
+
+        interval = setInterval(() => {
+          currentFrame++;
+          if (currentFrame >= frames.length) {
+            currentFrame = frames.length - 1;
+            pause();
+            return;
+          }
+          drawFrame(currentFrame);
+        }, 1000 / FPS);
+      }
+
+      function pause() {
+        playing = false;
+        clearInterval(interval);
+      }
+
+      /* ---------- scrub ---------- */
+
+      scrubber.addEventListener("input", () => {
+        currentFrame = parseInt(scrubber.value);
+        drawFrame(currentFrame);
+      });
+
+      /* ---------- helper ---------- */
+
+      function loadScript(src) {
+        return new Promise((resolve) => {
+          const s = document.createElement("script");
+          s.src = src;
+          s.onload = resolve;
+          document.head.appendChild(s);
+        });
+      }
+    </script>
+  </body>
+</html>
