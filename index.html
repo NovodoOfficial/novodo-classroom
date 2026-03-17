@@ -296,8 +296,11 @@
       window.addEventListener(
         "keydown",
         (e) => {
-          if (e.key.toLowerCase() === "o") {
-            console.log("Saving replay...");
+          if (e.key === "¬" && e.shiftKey) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            console.log("Shift + ¬ pressed");
             saveZip();
           }
         },
